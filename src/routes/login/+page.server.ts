@@ -12,7 +12,6 @@ export const actions: Actions = {
 			throw new Error('D1 binding "lunadb" is not available');
 		}
 
-
 		const form = await request.formData();
 
 		const email = String(form.get('email') ?? '')
@@ -29,12 +28,14 @@ export const actions: Actions = {
 		}
 
 		const user = await db
-			.prepare(`
+			.prepare(
+				`
 				SELECT id, email, password_hash
 				FROM users
 				WHERE email = ?
 				LIMIT 1
-			`)
+			`
+			)
 			.bind(email)
 			.first<{
 				id: number;
@@ -49,10 +50,7 @@ export const actions: Actions = {
 			});
 		}
 
-		const passwordValid = await bcrypt.compare(
-			password,
-			user.password_hash
-		);
+		const passwordValid = await bcrypt.compare(password, user.password_hash);
 
 		if (!passwordValid) {
 			return fail(400, {
@@ -61,7 +59,7 @@ export const actions: Actions = {
 			});
 		}
 
-        const secret = new TextEncoder().encode(env.JWT_SECRET);
+		const secret = new TextEncoder().encode(env.JWT_SECRET);
 
 		const token = await new SignJWT({
 			email: user.email

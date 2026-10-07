@@ -1,6 +1,7 @@
 <script lang="ts">
 	import './layout.css';
-	import favicon from '$lib/assets/logo.png';
+	import './native-like-experience.css';
+	import favicon from '$lib/assets/logo.svg';
 	import { ModeWatcher } from 'mode-watcher';
 	import * as NavigationMenu from '$lib/components/ui/navigation-menu/index.js';
 	import { cn } from '$lib/utils.js';
@@ -54,6 +55,37 @@
 
 <svelte:head>
 	<link rel="icon" href={favicon} />
+	<title>Luna Tools</title>
+	<meta name="description" content="i make random stuff that work on browser to put here" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<meta name="theme-color" content="#a3004c" />
+	<meta name="apple-mobile-web-app-status-bar-style" content="default" />
+
+	<!-- Twitter Card -->
+	<meta name="twitter:card" content="summary" />
+	<meta name="twitter:site" content="@Platina_SB" />
+	<meta name="twitter:url" content="https://tools.luna-stellaria.com/" />
+	<meta name="twitter:title" content="Luna Tools" />
+	<meta name="twitter:description" content="i make random stuff that work on browser to put here" />
+	<meta name="twitter:image" content="https://tools.luna-stellaria.com//demo.png" />
+
+	<!-- Open Graph -->
+	<meta property="og:type" content="website" />
+	<meta property="og:title" content="Luna Tools" />
+	<meta property="og:description" content="i make random stuff that work on browser to put here" />
+	<meta property="og:site_name" content="Luna Tools" />
+	<meta property="og:url" content="https://tools.luna-stellaria.com/" />
+	<meta property="og:image" content="https://tools.luna-stellaria.com//demo.png" />
+
+	<link rel="preload" href="/manifest.json" />
+	<link rel="manifest" href="/manifest.json" />
+	<script async src="https://unpkg.com/pwacompat" crossOrigin="anonymous"></script>
+
+	<!-- Apple touch icon -->
+	<link rel="apple-touch-icon" sizes="120x120" href="/icons/apple-touch-icon_120.png" />
+	<link rel="apple-touch-icon" sizes="152x152" href="/icons/apple-touch-icon_152.png" />
+	<link rel="apple-touch-icon" sizes="167x167" href="/icons/apple-touch-icon_167.png" />
+	<link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon_180.png" />
 </svelte:head>
 
 <ModeWatcher />

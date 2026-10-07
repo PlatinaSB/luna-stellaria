@@ -23,9 +23,7 @@ export const actions: Actions = {
 			.toLowerCase();
 
 		const password = String(form.get('password') ?? '');
-		const confirmPassword = String(
-			form.get('confirm_password') ?? ''
-		);
+		const confirmPassword = String(form.get('confirm_password') ?? '');
 
 		if (!email || !password || !confirmPassword) {
 			return fail(400, {
@@ -49,12 +47,14 @@ export const actions: Actions = {
 		}
 
 		const existingUser = await db
-			.prepare(`
+			.prepare(
+				`
 				SELECT id
 				FROM users
 				WHERE email = ?
 				LIMIT 1
-			`)
+			`
+			)
 			.bind(email)
 			.first<{ id: number }>();
 
@@ -68,14 +68,16 @@ export const actions: Actions = {
 		const passwordHash = await bcrypt.hash(password, 12);
 
 		const result = await db
-			.prepare(`
+			.prepare(
+				`
 				INSERT INTO users (
 					email,
 					password_hash
 				)
 				VALUES (?, ?)
 				RETURNING id, email
-			`)
+			`
+			)
 			.bind(email, passwordHash)
 			.first<{
 				id: number;
