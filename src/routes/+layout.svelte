@@ -175,7 +175,7 @@
 		</p>
 
 		<a
-			href="https://github.com/PlatinaSB/lunatools"
+			href="https://github.com/PlatinaSB/luna-stellaria"
 			target="_blank"
 			rel="noopener noreferrer"
 			class="transition-colors hover:text-foreground"

@@ -23,7 +23,7 @@
 				name: SITE.name,
 				url: `${SITE.url}/`,
 				logo: `${SITE.url}/icons/icon_512.png`,
-				sameAs: ['https://github.com/PlatinaSB/lunatools']
+				sameAs: ['https://github.com/PlatinaSB/luna-stellaria']
 			},
 			{
 				'@type': 'ItemList',
