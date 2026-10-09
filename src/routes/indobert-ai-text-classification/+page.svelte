@@ -19,7 +19,7 @@
 		operatingSystem: 'Any',
 		browserRequirements: 'Requires JavaScript',
 		description,
-		isAccessibleForFree: true,
+		isAccessibleForFree: false,
 		offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' }
 	};
 
