@@ -1,6 +1,24 @@
 <script lang="ts">
 	import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
 	import { Input } from '$lib/components/ui/input';
+	import Seo from '$lib/components/seo.svelte';
+	import { absoluteUrl } from '$lib/seo.js';
+
+	const description =
+		'Free 24 card game solver. Enter four numbers and instantly find the arithmetic expression that makes 24 using addition, subtraction, multiplication, and division.';
+
+	const jsonLd = {
+		'@context': 'https://schema.org',
+		'@type': 'WebApplication',
+		name: '24 Card Game Solver',
+		url: absoluteUrl('/24cardgame'),
+		applicationCategory: 'GameApplication',
+		operatingSystem: 'Any',
+		browserRequirements: 'Requires JavaScript',
+		description,
+		isAccessibleForFree: true,
+		offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' }
+	};
 
 	let card1 = $state<number | undefined>(undefined);
 	let card2 = $state<number | undefined>(undefined);
@@ -76,11 +94,13 @@
 	});
 </script>
 
+<Seo title="24 Card Game Solver" {description} path="/24cardgame" {jsonLd} />
+
 <div class="flex min-h-screen items-center justify-center px-4">
 	<Card class="relative w-full max-w-xl shadow-xl">
 		<CardHeader class="space-y-4">
 			<div class="flex items-center justify-between">
-				<CardTitle class="text-2xl">Kartu Remi Game 24</CardTitle>
+				<CardTitle class="text-2xl"><h1 class="contents">Kartu Remi Game 24</h1></CardTitle>
 			</div>
 		</CardHeader>
 

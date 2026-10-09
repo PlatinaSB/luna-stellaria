@@ -1,7 +1,9 @@
 {
     "name": "Luna Tools",
     "short_name": "Luna",
-    "description": "i make random stuff that work on browser to put here",
+    "description": "Free browser tools to convert and compress images, generate QR codes, solve 24 card puzzles, and detect Indonesian AI text.",
+    "lang": "en",
+    "categories": ["utilities", "productivity", "photo"],
     "theme_color": "#a3004c",
     "background_color": "#0a0a0a",
     "display": "standalone",

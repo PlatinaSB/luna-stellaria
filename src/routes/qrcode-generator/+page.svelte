@@ -4,8 +4,26 @@
 	import * as NativeSelect from '$lib/components/ui/native-select/index.js';
 	import * as Card from '$lib/components/ui/card/index.js';
 	import { Label } from '$lib/components/ui/label/index.js';
+	import Seo from '$lib/components/seo.svelte';
+	import { absoluteUrl } from '$lib/seo.js';
 
 	import QRCode from 'qrcode';
+
+	const description =
+		'Generate QR codes for free in your browser. Create downloadable QR codes from any URL or text in PNG, JPEG, or WebP with adjustable error correction levels.';
+
+	const jsonLd = {
+		'@context': 'https://schema.org',
+		'@type': 'WebApplication',
+		name: 'QR Code Generator',
+		url: absoluteUrl('/qrcode-generator'),
+		applicationCategory: 'UtilitiesApplication',
+		operatingSystem: 'Any',
+		browserRequirements: 'Requires JavaScript',
+		description,
+		isAccessibleForFree: true,
+		offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' }
+	};
 
 	let input = $state('');
 	let ecl: 'L' | 'M' | 'Q' | 'H' = $state('H');
@@ -59,10 +77,12 @@
 	});
 </script>
 
+<Seo title="QR Code Generator" {description} path="/qrcode-generator" {jsonLd} />
+
 <div class="flex min-h-screen items-center justify-center p-4">
 	<Card.Root class="w-full max-w-sm">
 		<Card.Header>
-			<Card.Title>QR Code Generator</Card.Title>
+			<Card.Title><h1 class="contents">QR Code Generator</h1></Card.Title>
 			<div class="grid gap-2">
 				<Input bind:value={input} placeholder="Enter URL or text" />
 

@@ -8,6 +8,24 @@
 	import { onDestroy } from 'svelte';
 	import { Progress } from '$lib/components/ui/progress/index.js';
 	import { Spinner } from '$lib/components/ui/spinner/index.js';
+	import Seo from '$lib/components/seo.svelte';
+	import { absoluteUrl } from '$lib/seo.js';
+
+	const description =
+		'Compress JPEG, PNG, and WebP images for free in your browser. Reduce image file size for faster websites and smaller emails without uploading your files.';
+
+	const jsonLd = {
+		'@context': 'https://schema.org',
+		'@type': 'WebApplication',
+		name: 'Compress Image',
+		url: absoluteUrl('/compress'),
+		applicationCategory: 'MultimediaApplication',
+		operatingSystem: 'Any',
+		browserRequirements: 'Requires JavaScript',
+		description,
+		isAccessibleForFree: true,
+		offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' }
+	};
 
 	let file1: FileList | undefined = $state(undefined);
 	let results: {
@@ -159,10 +177,12 @@
 	});
 </script>
 
+<Seo title="Compress Image Online" {description} path="/compress" {jsonLd} />
+
 <div class="flex min-h-screen items-center justify-center">
 	<Card.Root class="mx-auto w-full max-w-[66vw]">
 		<Card.Header>
-			<Card.Title>Compress Image</Card.Title>
+			<Card.Title><h1 class="contents">Compress Image</h1></Card.Title>
 		</Card.Header>
 
 		<Card.Content>
