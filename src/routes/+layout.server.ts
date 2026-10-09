@@ -8,6 +8,10 @@ const ALLOWED_HOSTNAMES = new Set(['localhost', '127.0.0.1', '::1']);
 export const load = (async ({ cookies, url }) => {
 	const hostname = url.hostname.toLowerCase();
 
+	if (hostname === 'tools.luna-stellaria.com') {
+		throw redirect(307, `https://luna-stellaria.com${url.pathname}${url.search}`);
+	}
+
 	const isAllowed =
 		ALLOWED_HOSTNAMES.has(hostname) ||
 		hostname.endsWith('.localhost') ||
