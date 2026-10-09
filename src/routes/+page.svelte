@@ -1,34 +1,7 @@
 <script>
 	import * as Card from '$lib/components/ui/card/index.js';
 
-	const imageTools = [
-		{
-			title: 'Convert Image',
-			href: '/convert',
-			description: 'Convert images between formats'
-		},
-		{
-			title: 'Compress Image',
-			href: '/compress',
-			description: 'Reduce image file size'
-		}
-	];
-
-	const cardTools = [
-		{
-			title: '24 Card Game',
-			href: '/24cardgame',
-			description: 'solve 24 card puzzles'
-		}
-	];
-
-	const aiTools = [
-		{
-			title: 'IndoBERT AI Text Classification',
-			href: '/indobert-ai-text-classification',
-			description: 'Adalah alat deteksi teks generatif AI berbahasa Indonesia'
-		}
-	];
+	import { imageTools, cardTools, aiTools } from '$lib/menu-list/index.js';
 </script>
 
 <svelte:head>
