@@ -27,7 +27,7 @@
 			},
 			{
 				'@type': 'ItemList',
-				name: 'Luna Tools browser tools',
+				name: 'Luna Stellaria browser tools',
 				itemListElement: publicTools.map((tool, index) => ({
 					'@type': 'ListItem',
 					position: index + 1,
@@ -44,7 +44,7 @@
 <main class="flex min-h-screen items-center justify-center px-4">
 	<div class="w-full max-w-2xl space-y-6 text-center">
 		<div class="space-y-2">
-			<h1 class="text-4xl font-bold tracking-tight">Luna Tools</h1>
+			<h1 class="text-4xl font-bold tracking-tight">Luna Stellaria</h1>
 			<p class="text-muted-foreground">
 				Free, privacy-friendly browser tools for images, QR codes, puzzles, and text.
 			</p>

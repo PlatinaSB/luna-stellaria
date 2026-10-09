@@ -1,6 +1,6 @@
 export const SITE = {
-	name: 'Luna Tools',
-	url: 'https://tools.luna-stellaria.com',
+	name: 'Luna Stellaria',
+	url: 'https://luna-stellaria.com',
 	twitter: '@Platina_SB',
 	locale: 'en_US',
 	defaultImage: '/demo.png',
@@ -49,7 +49,7 @@ export const publicTools: PublicTool[] = [
 	{
 		path: '/about',
 		title: 'About',
-		description: 'Learn about Luna Tools and the free browser tools it offers.',
+		description: 'Learn about Luna Stellaria and the free browser tools it offers.',
 		priority: 0.4,
 		changefreq: 'monthly'
 	}

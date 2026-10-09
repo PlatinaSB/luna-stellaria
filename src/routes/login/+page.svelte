@@ -10,7 +10,7 @@
 	import Seo from '$lib/components/seo.svelte';
 </script>
 
-<Seo title="Login" description="Log in to your Luna Tools account." path="/login" noindex />
+<Seo title="Login" description="Log in to your Luna Stellaria account." path="/login" noindex />
 
 <div class="flex min-h-screen items-center justify-center">
 	<Card.Root class="-my-4 w-full max-w-sm">

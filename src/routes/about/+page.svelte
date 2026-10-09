@@ -4,12 +4,12 @@
 	import { SITE, absoluteUrl, publicTools } from '$lib/seo.js';
 
 	const description =
-		'Luna Tools is a growing collection of free, privacy-friendly browser tools, including image conversion and compression, QR code generation, and puzzle solvers.';
+		'Luna Stellaria is a growing collection of free, privacy-friendly browser tools, including image conversion and compression, QR code generation, and puzzle solvers.';
 
 	const jsonLd = {
 		'@context': 'https://schema.org',
 		'@type': 'AboutPage',
-		name: 'About Luna Tools',
+		name: 'About Luna Stellaria',
 		url: absoluteUrl('/about'),
 		description,
 		isPartOf: { '@id': `${SITE.url}/#website` }
@@ -21,17 +21,17 @@
 <main class="flex min-h-screen items-center justify-center px-4">
 	<div class="w-full max-w-2xl space-y-6">
 		<div class="space-y-2 text-center">
-			<h1 class="text-4xl font-bold tracking-tight">About Luna Tools</h1>
+			<h1 class="text-4xl font-bold tracking-tight">About Luna Stellaria</h1>
 			<p class="text-muted-foreground">{description}</p>
 		</div>
 
 		<Card.Root>
 			<Card.Header>
-				<Card.Title>Why Luna Tools?</Card.Title>
+				<Card.Title>Why Luna Stellaria?</Card.Title>
 			</Card.Header>
 			<Card.Content class="space-y-4">
 				<p>
-					Luna Tools is a lightweight collection of utilities that run entirely in your browser.
+					Luna Stellaria is a lightweight collection of utilities that run entirely in your browser.
 					Your files are processed on your own device, so images never leave your computer and
 					nothing needs to be uploaded.
 				</p>

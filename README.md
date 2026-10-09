@@ -1,12 +1,12 @@
-# Luna Tools
+# Luna Stellaria
 
 <p align="center">
-  <img src="./static/logo.svg" alt="luna tools logo" width="128">
+  <img src="./static/logo.svg" alt="Luna Stellaria logo" width="128">
 </p>
 
 A growing collection of small browser tools, built with [SvelteKit](https://kit.svelte.dev/) and Svelte 5, styled with Tailwind CSS and [shadcn-svelte](https://www.shadcn-svelte.com/).
 
-Website: [Luna tools](https://tools.luna-stellaria.com)
+Website: [Luna Stellaria](https://luna-stellaria.com)
 
 ## Tools
 
