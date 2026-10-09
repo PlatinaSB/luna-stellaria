@@ -8,4 +8,4 @@ Disallow: /register
 Disallow: /logout
 Disallow: /indobert-ai-text-classification
 
-Sitemap: https://tools.luna-stellaria.com/sitemap.xml
+Sitemap: https://luna-stellaria.com/sitemap.xml

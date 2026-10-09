@@ -31,7 +31,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 	<meta name="theme-color" content="#a3004c" />
 	<meta name="apple-mobile-web-app-status-bar-style" content="default" />
-	<meta name="apple-mobile-web-app-title" content="Luna Tools" />
+	<meta name="apple-mobile-web-app-title" content="Luna Stellaria" />
 
 	<link rel="sitemap" type="application/xml" href="/sitemap.xml" />
 	<link rel="preload" href="/manifest.json" />
@@ -175,7 +175,7 @@
 		</p>
 
 		<a
-			href="https://github.com/PlatinaSB/lunatools"
+			href="https://github.com/PlatinaSB/luna-stellaria"
 			target="_blank"
 			rel="noopener noreferrer"
 			class="transition-colors hover:text-foreground"

@@ -12,10 +12,11 @@ export const load = (async ({ cookies, url }) => {
 		ALLOWED_HOSTNAMES.has(hostname) ||
 		hostname.endsWith('.localhost') ||
 		hostname.endsWith('.luna-stellaria.com') ||
+		hostname.endsWith('luna-stellaria.com') ||
 		hostname.endsWith('-lunatools.platinasb.workers.dev');
 
 	if (!isAllowed) {
-		throw redirect(308, `https://tools.luna-stellaria.com${url.pathname}${url.search}`);
+		throw redirect(308, `https://luna-stellaria.com${url.pathname}${url.search}`);
 	}
 
 	const token = cookies.get('jwt');
