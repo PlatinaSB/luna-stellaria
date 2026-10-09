@@ -9,6 +9,24 @@
 	import * as NativeSelect from '$lib/components/ui/native-select/index.js';
 	import { Progress } from '$lib/components/ui/progress/index.js';
 	import { Spinner } from '$lib/components/ui/spinner/index.js';
+	import Seo from '$lib/components/seo.svelte';
+	import { absoluteUrl } from '$lib/seo.js';
+
+	const description =
+		'Convert images between JPEG, PNG, and WebP for free in your browser. Batch convert, optionally compress, and download instantly — no uploads and no sign-up.';
+
+	const jsonLd = {
+		'@context': 'https://schema.org',
+		'@type': 'WebApplication',
+		name: 'Convert Image',
+		url: absoluteUrl('/convert'),
+		applicationCategory: 'MultimediaApplication',
+		operatingSystem: 'Any',
+		browserRequirements: 'Requires JavaScript',
+		description,
+		isAccessibleForFree: true,
+		offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' }
+	};
 
 	let file1: FileList | undefined = $state(undefined);
 
@@ -163,10 +181,12 @@
 	});
 </script>
 
+<Seo title="Convert Image (JPEG, PNG, WebP)" {description} path="/convert" {jsonLd} />
+
 <div class="flex min-h-screen items-center justify-center">
 	<Card.Root class="w-full max-w-[66vw]">
 		<Card.Header>
-			<Card.Title>Convert & Compress Image</Card.Title>
+			<Card.Title><h1 class="contents">Convert &amp; Compress Image</h1></Card.Title>
 		</Card.Header>
 
 		<Card.Content>

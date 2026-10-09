@@ -8,7 +8,7 @@
 /// <reference types="@sveltejs/kit" />
 
 // Only necessary if you have an import from `$env/static/public`
-/// <reference types="../.svelte-kit/ambient.d.ts" />
+/// <reference types="../../.svelte-kit/ambient.d.ts" />
 
 import { build, files, version } from '$service-worker';
 

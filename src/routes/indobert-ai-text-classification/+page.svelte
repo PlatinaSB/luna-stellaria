@@ -4,6 +4,24 @@
 	import { Button } from '$lib/components/ui/button/index.js';
 	import { Textarea } from '$lib/components/ui/textarea/index.js';
 	import Progress from '$lib/components/ui/progress/progress.svelte';
+	import Seo from '$lib/components/seo.svelte';
+	import { absoluteUrl } from '$lib/seo.js';
+
+	const description =
+		'IndoBERT AI Text Classification adalah alat deteksi teks generatif AI berbahasa Indonesia';
+
+	const jsonLd = {
+		'@context': 'https://schema.org',
+		'@type': 'WebApplication',
+		name: 'Convert Image',
+		url: absoluteUrl('/indobert-ai-text-classification'),
+		applicationCategory: 'MultimediaApplication',
+		operatingSystem: 'Any',
+		browserRequirements: 'Requires JavaScript',
+		description,
+		isAccessibleForFree: false,
+		offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' }
+	};
 
 	let { form }: PageProps = $props();
 
@@ -15,10 +33,12 @@
 	const formatScore = (score: number) => `${(score * 100).toFixed(2)}%`;
 </script>
 
+<Seo title="Convert Image (JPEG, PNG, WebP)" {description} path="/convert" {jsonLd} />
+
 <div class="flex min-h-screen items-center justify-center px-4">
 	<Card.Root class="w-full max-w-xl shadow-xl">
 		<Card.Header class="space-y-4">
-			<Card.Title>IndoBERT AI Text Classification</Card.Title>
+			<Card.Title><h1 class="contents">IndoBERT AI Text Classification</h1></Card.Title>
 
 			<Card.Description>Adalah alat deteksi teks generatif AI berbahasa Indonesia</Card.Description>
 		</Card.Header>

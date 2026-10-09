@@ -17,34 +17,7 @@
 
 	const isMobile = new IsMobile();
 
-	const imageTools: { title: string; href: string; description: string }[] = [
-		{
-			title: 'Convert Image',
-			href: '/convert',
-			description: 'Convert images between formats'
-		},
-		{
-			title: 'Compress Image',
-			href: '/compress',
-			description: 'Reduce image file size'
-		}
-	];
-
-	const cardTools: { title: string; href: string; description: string }[] = [
-		{
-			title: '24 Card Game',
-			href: '/24cardgame',
-			description: 'solve 24 card puzzles'
-		}
-	];
-
-	const aiTools: { title: string; href: string; description: string }[] = [
-		{
-			title: 'IndoBERT AI Text Classification',
-			href: '/indobert-ai-text-classification',
-			description: 'Adalah alat deteksi teks generatif AI berbahasa Indonesia'
-		}
-	];
+	import { imageTools, cardTools, aiTools } from '$lib/menu-list/index.js';
 
 	type ListItemProps = HTMLAttributes<HTMLAnchorElement> & {
 		title: string;
@@ -55,28 +28,12 @@
 
 <svelte:head>
 	<link rel="icon" href={favicon} />
-	<title>Luna Tools</title>
-	<meta name="description" content="i make random stuff that work on browser to put here" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 	<meta name="theme-color" content="#a3004c" />
 	<meta name="apple-mobile-web-app-status-bar-style" content="default" />
+	<meta name="apple-mobile-web-app-title" content="Luna Tools" />
 
-	<!-- Twitter Card -->
-	<meta name="twitter:card" content="summary" />
-	<meta name="twitter:site" content="@Platina_SB" />
-	<meta name="twitter:url" content="https://tools.luna-stellaria.com/" />
-	<meta name="twitter:title" content="Luna Tools" />
-	<meta name="twitter:description" content="i make random stuff that work on browser to put here" />
-	<meta name="twitter:image" content="https://tools.luna-stellaria.com//demo.png" />
-
-	<!-- Open Graph -->
-	<meta property="og:type" content="website" />
-	<meta property="og:title" content="Luna Tools" />
-	<meta property="og:description" content="i make random stuff that work on browser to put here" />
-	<meta property="og:site_name" content="Luna Tools" />
-	<meta property="og:url" content="https://tools.luna-stellaria.com/" />
-	<meta property="og:image" content="https://tools.luna-stellaria.com//demo.png" />
-
+	<link rel="sitemap" type="application/xml" href="/sitemap.xml" />
 	<link rel="preload" href="/manifest.json" />
 	<link rel="manifest" href="/manifest.json" />
 	<script async src="https://unpkg.com/pwacompat" crossOrigin="anonymous"></script>

@@ -7,12 +7,15 @@
 	import { Button } from '$lib/components/ui/button/index.js';
 	import { Input } from '$lib/components/ui/input/index.js';
 	import { Label } from '$lib/components/ui/label/index.js';
+	import Seo from '$lib/components/seo.svelte';
 </script>
+
+<Seo title="Register" description="Create a free Luna Tools account." path="/register" noindex />
 
 <div class="flex min-h-screen items-center justify-center">
 	<Card.Root class="-my-4 w-full max-w-sm">
 		<Card.Header>
-			<Card.Title>Register your account</Card.Title>
+			<Card.Title><h1 class="contents">Register your account</h1></Card.Title>
 
 			<Card.Description>Enter your email and password to create your account.</Card.Description>
 
