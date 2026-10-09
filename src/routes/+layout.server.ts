@@ -12,6 +12,7 @@ export const load = (async ({ cookies, url }) => {
 		ALLOWED_HOSTNAMES.has(hostname) ||
 		hostname.endsWith('.localhost') ||
 		hostname.endsWith('.luna-stellaria.com') ||
+		hostname.endsWith('luna-stellaria.com') ||
 		hostname.endsWith('-lunatools.platinasb.workers.dev');
 
 	if (!isAllowed) {
