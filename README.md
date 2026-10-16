@@ -10,18 +10,44 @@ Website: [Luna Stellaria](https://luna-stellaria.com)
 
 ## Tools
 
-### AI
+Full public list lives in [`src/lib/seo.ts`](src/lib/seo.ts) (`publicTools`) and navigation groups in [`src/lib/menu-list/index.ts`](src/lib/menu-list/index.ts).
 
-- **IndoBERT AI Text Classification** — detects generative AI text in Indonesian using a hosted endpoint.
+| Route                                  | Tool                                                                    |
+| -------------------------------------- | ----------------------------------------------------------------------- |
+| `/convert`                             | Convert images between JPEG, PNG, WebP                                  |
+| `/compress`                            | Compress images in-browser (compressorjs)                               |
+| `/qrcode-generator`                    | QR code generator (PNG/JPEG/WebP, custom error correction)              |
+| `/24cardgame`                          | 24 card game solver                                                     |
+| `/indobert-ai-text-classification`     | Indonesian AI text detection via hosted Hugging Face endpoint           |
+| `/login`, `/register`                  | Account auth (JWT cookie)                                               |
 
-### Image
+## Project Structure
 
-- **Convert Image** — converts images between JPEG, PNG, and WebP.
-- **Compress Image** — reduces image file size (via [compressorjs](https://www.npmjs.com/package/compressorjs)).
+```
+migrations/                     D1 SQL migrations
+src/routes/<tool>/+page.svelte  One route per tool
+src/routes/login|register/      Auth forms + form actions (+page.server.ts)
+src/lib/seo.ts                  Site metadata, public tool list, canonical URLs
+src/lib/components/seo.svelte   Drop-in <head> meta component
+src/lib/menu-list/              Navigation menu data
+src/lib/components/ui/          shadcn-svelte components
+src/service-worker/index.ts     PWA precache service worker
+```
 
-### Playing Card
+## Architecture
 
-- **24 Card Game** — solves 24 card puzzles.
+- **Client-only tools** — convert/compress/QR/24-card game run entirely in the browser; no uploads.
+- **AI text classification** — the page calls the hosted Hugging Face endpoint configured via `hf_endpoints` / `hf_endpoints_key`.
+- **Auth** — form actions in `login/+page.server.ts` and `register/+page.server.ts` read/write D1 via the `lunadb` binding, hash passwords with `bcryptjs` (cost 12), and set a 7-day HS256 JWT in an httpOnly `jwt` cookie (`jose`). `+layout.server.ts` verifies the cookie on every request and exposes `user` to the layout.
+- **Host redirect** — the layout server load redirects other deployment hostnames (e.g. `tools.luna-stellaria.com`, `*.workers.dev`) to `https://luna-stellaria.com` preserving path + query.
+- **SEO** — each page renders `<Seo title=... description=... path=... jsonLd=... />`; canonical/OG/Twitter tags generated from `SITE` in `src/lib/seo.ts`.
+
+## Adding a New Tool
+
+1. Create `src/routes/<slug>/+page.svelte` with the tool UI and a `<Seo>` component.
+2. Add the tool to `imageTools` / `cardTools` / `aiTools` in `src/lib/menu-list/index.ts` (navigation).
+3. Add it to `publicTools` in `src/lib/seo.ts` (sitemap/listing metadata).
+4. It is client-side first; only add server code (`+page.server.ts`) if the tool needs secrets or D1.
 
 ## Tech Stack
 
