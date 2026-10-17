@@ -2,6 +2,7 @@
 	import * as Card from '$lib/components/ui/card/index.js';
 	import Seo from '$lib/components/seo.svelte';
 	import { SITE, absoluteUrl, publicTools } from '$lib/seo.js';
+	import { resolve } from '$app/paths';
 
 	const description =
 		'Luna Stellaria is a growing collection of free, privacy-friendly browser tools, including image conversion and compression, QR code generation, and puzzle solvers.';
@@ -51,8 +52,7 @@
 					{#each publicTools as tool (tool.path)}
 						<li>
 							<a
-								href={tool.path}
-								rel=""
+								href={resolve(tool.path)}
 								class="block rounded-md border p-3 transition hover:bg-muted"
 							>
 								<span class="font-medium">{tool.title}</span>

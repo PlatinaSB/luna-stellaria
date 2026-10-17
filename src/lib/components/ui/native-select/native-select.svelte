@@ -3,7 +3,8 @@
 	import { cn, type WithElementRef } from '$lib/utils.js';
 	import type { HTMLSelectAttributes } from 'svelte/elements';
 
-	type NativeSelectProps = Omit<WithElementRef<HTMLSelectAttributes>, 'size'> & {
+	type NativeSelectProps = Omit<WithElementRef<HTMLSelectAttributes>, 'size' | 'ref'> & {
+		ref?: HTMLSelectElement | null;
 		size?: 'sm' | 'default';
 	};
 

@@ -28,10 +28,11 @@
 	}
 
 	import { imageTools, cardTools, aiTools } from '$lib/menu-list/index.js';
+	import type { Pathname } from '$app/types';
 
 	type ListItemProps = HTMLAttributes<HTMLAnchorElement> & {
 		title: string;
-		href: string;
+		href: Pathname;
 		content: string;
 	};
 </script>
@@ -62,8 +63,7 @@
 		<NavigationMenu.Link>
 			{#snippet child()}
 				<a
-					{href}
-					rel=""
+					href={resolve(href)}
 					class={cn(
 						'block space-y-1 rounded-md p-3 leading-none no-underline transition-colors outline-none select-none hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground',
 						className
@@ -85,7 +85,7 @@
 		<NavigationMenu.Item>
 			<NavigationMenu.Link>
 				{#snippet child()}
-					<a href="/" class={navigationMenuTriggerStyle()}>Home</a>
+					<a href={resolve('/')} class={navigationMenuTriggerStyle()}>Home</a>
 				{/snippet}
 			</NavigationMenu.Link>
 		</NavigationMenu.Item>
@@ -164,14 +164,14 @@
 			<NavigationMenu.Item>
 				<NavigationMenu.Link>
 					{#snippet child()}
-						<a href="/login" class={navigationMenuTriggerStyle()}> Login </a>
+						<a href={resolve('/login')} class={navigationMenuTriggerStyle()}> Login </a>
 					{/snippet}
 				</NavigationMenu.Link>
 			</NavigationMenu.Item>
 			<NavigationMenu.Item>
 				<NavigationMenu.Link>
 					{#snippet child()}
-						<a href="/register" class={navigationMenuTriggerStyle()}> Register </a>
+						<a href={resolve('/register')} class={navigationMenuTriggerStyle()}> Register </a>
 					{/snippet}
 				</NavigationMenu.Link>
 			</NavigationMenu.Item>

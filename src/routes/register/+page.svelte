@@ -67,7 +67,7 @@
 			<Card.Description>Enter your email and password to create your account.</Card.Description>
 
 			<Card.Action>
-				<Button variant="link" href="/login">Login</Button>
+				<Button variant="link" href={resolve('/login')}>Login</Button>
 			</Card.Action>
 		</Card.Header>
 

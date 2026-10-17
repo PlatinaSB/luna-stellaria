@@ -1,3 +1,5 @@
+import type { Pathname } from '$app/types';
+
 export const SITE = {
 	name: 'Luna Stellaria',
 	url: 'https://luna-stellaria.com',
@@ -9,7 +11,7 @@ export const SITE = {
 } as const;
 
 export type PublicTool = {
-	path: string;
+	path: Pathname;
 	title: string;
 	description: string;
 	priority: number;
