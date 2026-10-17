@@ -18,12 +18,14 @@
 	],
 
 	"vars": {
-		"ENVIRONMENT": "production"
+		"ENVIRONMENT": "production",
+		"PUBLIC_Turnstile_site_key": "0x4AAAAAAFZK5ULvx-AEBf7T"
 	},
 
 	"previews": {
 		"vars": {
-			"ENVIRONMENT": "preview"
+			"ENVIRONMENT": "preview",
+			"PUBLIC_Turnstile_site_key": "0x4AAAAAAFZK5ULvx-AEBf7T"
 		}
 	},
 	"observability": {

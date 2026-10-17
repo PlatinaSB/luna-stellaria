@@ -65,13 +65,18 @@ endpoint live in the companion API project, [`luna-stellaria-api`](../luna-stell
   `GET /auth/me` to expose `user` to the layout. Route anything that might run on a non-canonical host
   through this file — don't bypass it.
 - `src/service-worker/index.ts` — PWA precache service worker.
-- `wrangler.jsonc` — Worker name, custom domain route, static assets. No D1 binding, no secrets.
+- `wrangler.jsonc` — Worker name, custom domain route, static assets, and the public
+  `PUBLIC_Turnstile_site_key` var. No D1 binding, no secrets. Run `npm run gen` after changing it.
 
 ### Auth pattern (reference)
 
 There is no server-side auth code here — it all lives in the API. From the frontend:
 
-- Login/register pages `fetch(`${apiBaseUrl()}/auth/login|register`, { method: 'POST', credentials: 'include', headers: { 'Content-Type': 'application/json' }, body: ... })`.
+- Login/register pages `fetch(`${apiBaseUrl()}/auth/login|register`, { method: 'POST', credentials: 'include', headers: { 'Content-Type': 'application/json' }, body: ... })`. Both require a
+  `turnstile_token` in the body (login, register, and the IndoBERT classifier), taken from the
+  `<Turnstile>` widget (`src/lib/components/turnstile.svelte`,
+  site key from the `PUBLIC_Turnstile_site_key` env var); bump its `resetSignal` after failed submissions
+  because tokens are single-use.
 - On success, call `invalidateAll()` (to refresh the layout's `data.user`) then `goto(resolve('/'))`.
 - Logout (`src/routes/+layout.svelte`) posts to `/auth/logout` with `credentials: 'include'`, then `invalidateAll()` + `goto(resolve('/login'))`.
 - Account settings (`/account`) post to `/auth/account/name|email|password` the same way; email and
@@ -90,9 +95,12 @@ There is no server-side auth code here — it all lives in the API. From the fro
 
 ## Environment & deployment
 
-- **No environment variables or secrets live in this project** — there is no `.env.example`. All
-  secrets (`JWT_SECRET`, `hf_endpoints`, `hf_endpoints_key`) and the `lunadb` D1 binding belong to
-  `luna-stellaria-api`.
+- **Only public env config lives in this project** — `PUBLIC_Turnstile_site_key` (the Turnstile site
+  key, public by design) is read via `$env/dynamic/public` (`src/lib/components/turnstile.svelte`).
+  Locally it comes from `.env` (template in `.env.example`); in production/preview it comes from the
+  `vars` entry in `wrangler.jsonc` (change it in both places). Never put secrets here: all secrets
+  (`JWT_SECRET`, `Turnstile_secret_key`, `hf_endpoints`, `hf_endpoints_key`) and the `lunadb` D1
+  binding belong to `luna-stellaria-api`.
 - Namespace types are declared in `src/app.d.ts`; the generated `Env` exposes only `ASSETS`.
 - The Worker is bound to `luna-stellaria.com` through the `routes` entry in `wrangler.jsonc` (`custom_domain: true`). The domain's zone must be in the same Cloudflare account or `wrangler deploy` fails. The API is deployed separately to `api.luna-stellaria.com`.
 - Keep `README.md` and this file in sync when adding tools, scripts, or changing deployment/domain behavior.

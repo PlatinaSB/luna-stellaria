@@ -6,17 +6,31 @@
 	import { Input } from '$lib/components/ui/input/index.js';
 	import { Label } from '$lib/components/ui/label/index.js';
 	import Seo from '$lib/components/seo.svelte';
+	import Turnstile from '$lib/components/turnstile.svelte';
 	import { apiBaseUrl } from '$lib/api.js';
 
 	let name = $state('');
 	let email = $state('');
 	let password = $state('');
 	let confirmPassword = $state('');
+	let turnstileToken = $state('');
+	let resetSignal = $state(0);
 	let error = $state<string | null>(null);
 	let submitting = $state(false);
 
+	function resetTurnstile(): void {
+		turnstileToken = '';
+		resetSignal += 1;
+	}
+
 	async function handleSubmit(event: SubmitEvent) {
 		event.preventDefault();
+
+		if (!turnstileToken) {
+			error = 'Please complete the human verification challenge.';
+			return;
+		}
+
 		submitting = true;
 		error = null;
 
@@ -29,6 +43,7 @@
 					email,
 					password,
 					confirm_password: confirmPassword,
+					turnstile_token: turnstileToken,
 					...(name.trim() ? { name: name.trim() } : {})
 				})
 			});
@@ -39,6 +54,7 @@
 
 			if (!response.ok) {
 				error = body?.error?.message ?? 'Registration failed. Please try again.';
+				resetTurnstile();
 				return;
 			}
 
@@ -46,6 +62,7 @@
 			await goto(resolve('/'));
 		} catch {
 			error = 'Unable to reach the server. Please try again.';
+			resetTurnstile();
 		} finally {
 			submitting = false;
 		}
@@ -131,6 +148,8 @@
 					<Button type="submit" class="w-full" disabled={submitting}>
 						{submitting ? 'Registering…' : 'Register'}
 					</Button>
+
+					<Turnstile onverify={(token) => (turnstileToken = token)} {resetSignal} />
 				</div>
 			</form>
 
