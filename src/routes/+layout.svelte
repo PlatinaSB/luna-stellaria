@@ -145,10 +145,15 @@
 			</Button>
 		</NavigationMenu.Item>
 		{#if data.user}
+			{@const accountName = data.user.display_name}
 			<NavigationMenu.Item>
-				<span class="flex h-9 items-center rounded-md px-3 text-sm font-medium">
-					{data.user.email}
-				</span>
+				<NavigationMenu.Link>
+					{#snippet child()}
+						<a href={resolve('/account')} class={navigationMenuTriggerStyle()}>
+							{accountName}
+						</a>
+					{/snippet}
+				</NavigationMenu.Link>
 			</NavigationMenu.Item>
 			<NavigationMenu.Item>
 				<form onsubmit={handleLogout}>

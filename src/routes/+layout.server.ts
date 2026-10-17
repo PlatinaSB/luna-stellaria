@@ -39,7 +39,9 @@ export const load = (async ({ cookies, url, fetch }) => {
 			return { user: null };
 		}
 
-		const body = (await response.json()) as { data?: { user?: { email: string } | null } };
+		const body = (await response.json()) as {
+			data?: { user?: { email: string; display_name: string } | null };
+		};
 
 		return { user: body.data?.user ?? null };
 	} catch {

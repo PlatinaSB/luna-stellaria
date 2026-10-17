@@ -8,6 +8,7 @@
 	import Seo from '$lib/components/seo.svelte';
 	import { apiBaseUrl } from '$lib/api.js';
 
+	let name = $state('');
 	let email = $state('');
 	let password = $state('');
 	let confirmPassword = $state('');
@@ -24,7 +25,12 @@
 				method: 'POST',
 				credentials: 'include',
 				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ email, password, confirm_password: confirmPassword })
+				body: JSON.stringify({
+					email,
+					password,
+					confirm_password: confirmPassword,
+					...(name.trim() ? { name: name.trim() } : {})
+				})
 			});
 
 			const body = (await response.json().catch(() => null)) as {
@@ -68,6 +74,20 @@
 		<Card.Content>
 			<form onsubmit={handleSubmit}>
 				<div class="flex flex-col gap-6">
+					<div class="grid gap-2">
+						<Label for="name">Account Name</Label>
+
+						<Input
+							id="name"
+							name="name"
+							type="text"
+							placeholder="Leave blank for a random name"
+							minlength={2}
+							maxlength={40}
+							bind:value={name}
+						/>
+					</div>
+
 					<div class="grid gap-2">
 						<Label for="email">Email</Label>
 
