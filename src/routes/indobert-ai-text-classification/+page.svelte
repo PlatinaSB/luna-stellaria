@@ -7,6 +7,7 @@
 	import { Textarea } from '$lib/components/ui/textarea/index.js';
 	import Progress from '$lib/components/ui/progress/progress.svelte';
 	import Seo from '$lib/components/seo.svelte';
+	import Turnstile from '$lib/components/turnstile.svelte';
 	import { absoluteUrl } from '$lib/seo.js';
 	import { apiBaseUrl } from '$lib/api.js';
 
@@ -32,11 +33,18 @@
 	};
 
 	let text = $state('');
+	let turnstileToken = $state('');
+	let resetSignal = $state(0);
 	let predictions = $state<Prediction[] | null>(null);
 	let error = $state<string | null>(null);
 	let loading = $state(false);
 
 	const formatScore = (score: number) => `${(score * 100).toFixed(2)}%`;
+
+	function resetTurnstile(): void {
+		turnstileToken = '';
+		resetSignal += 1;
+	}
 
 	onMount(async () => {
 		const response = await fetch(`${apiBaseUrl()}/auth/me`, { credentials: 'include' });
@@ -48,6 +56,12 @@
 
 	async function handleSubmit(event: SubmitEvent) {
 		event.preventDefault();
+
+		if (!turnstileToken) {
+			error = 'Please complete the human verification challenge.';
+			return;
+		}
+
 		loading = true;
 		error = null;
 		predictions = null;
@@ -57,7 +71,7 @@
 				method: 'POST',
 				credentials: 'include',
 				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ text })
+				body: JSON.stringify({ text, turnstile_token: turnstileToken })
 			});
 
 			if (response.status === 401) {
@@ -72,12 +86,14 @@
 
 			if (!response.ok) {
 				error = body?.error?.message ?? 'Failed to detect the text.';
+				resetTurnstile();
 				return;
 			}
 
 			predictions = body?.data?.predictions ?? [];
 		} catch {
 			error = 'Unable to reach the server. Please try again.';
+			resetTurnstile();
 		} finally {
 			loading = false;
 		}
@@ -106,6 +122,8 @@
 				<Button type="submit" disabled={loading}>
 					{loading ? 'Mendeteksi…' : 'Deteksi Teks'}
 				</Button>
+
+				<Turnstile onverify={(token) => (turnstileToken = token)} {resetSignal} />
 			</form>
 
 			{#if error}

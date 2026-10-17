@@ -6,15 +6,29 @@
 	import { Input } from '$lib/components/ui/input/index.js';
 	import { Label } from '$lib/components/ui/label/index.js';
 	import Seo from '$lib/components/seo.svelte';
+	import Turnstile from '$lib/components/turnstile.svelte';
 	import { apiBaseUrl } from '$lib/api.js';
 
 	let email = $state('');
 	let password = $state('');
+	let turnstileToken = $state('');
+	let resetSignal = $state(0);
 	let error = $state<string | null>(null);
 	let submitting = $state(false);
 
+	function resetTurnstile(): void {
+		turnstileToken = '';
+		resetSignal += 1;
+	}
+
 	async function handleSubmit(event: SubmitEvent) {
 		event.preventDefault();
+
+		if (!turnstileToken) {
+			error = 'Please complete the human verification challenge.';
+			return;
+		}
+
 		submitting = true;
 		error = null;
 
@@ -23,7 +37,11 @@
 				method: 'POST',
 				credentials: 'include',
 				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ email, password })
+				body: JSON.stringify({
+					email,
+					password,
+					turnstile_token: turnstileToken
+				})
 			});
 
 			const body = (await response.json().catch(() => null)) as {
@@ -32,6 +50,7 @@
 
 			if (!response.ok) {
 				error = body?.error?.message ?? 'Invalid email or password.';
+				resetTurnstile();
 				return;
 			}
 
@@ -39,6 +58,7 @@
 			await goto(resolve('/'));
 		} catch {
 			error = 'Unable to reach the server. Please try again.';
+			resetTurnstile();
 		} finally {
 			submitting = false;
 		}
@@ -100,6 +120,8 @@
 					<Button type="submit" class="w-full" disabled={submitting}>
 						{submitting ? 'Logging in…' : 'Login'}
 					</Button>
+
+					<Turnstile onverify={(token) => (turnstileToken = token)} {resetSignal} />
 				</div>
 			</form>
 

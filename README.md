@@ -30,12 +30,13 @@ Full public list lives in [`src/lib/seo.ts`](src/lib/seo.ts) (`publicTools`) and
 
 ```
 src/routes/<tool>/+page.svelte  One route per tool
-src/routes/login|register/      Auth forms (client-side, call the API)
+src/routes/login|register/      Auth forms (client-side, call the API with a Turnstile token)
 src/routes/account/             Account settings (client-side, calls the API)
 src/routes/+layout.server.ts    Auth state from the API + host redirect
 src/lib/api.ts                  API base URL resolution (apiBaseUrl)
 src/lib/seo.ts                  Site metadata, public tool list, canonical URLs
 src/lib/components/seo.svelte   Drop-in <head> meta component
+src/lib/components/turnstile.svelte  Cloudflare Turnstile widget (login/register)
 src/lib/menu-list/              Navigation menu data
 src/lib/components/ui/          shadcn-svelte components
 src/service-worker/index.ts     PWA precache service worker
@@ -86,7 +87,10 @@ npm install
 npm run dev
 ```
 
-Start the API alongside it (`cd ../luna-stellaria-api && npm run dev`) so auth and the AI classifier work. No environment variables are needed in this project.
+Start the API alongside it (`cd ../luna-stellaria-api && npm run dev`) so auth and the AI classifier
+work. The Turnstile site key for the login/register widget is read at runtime via
+`$env/dynamic/public`: `.env` locally (template in `.env.example`), `wrangler.jsonc` `vars` in
+production — it is public by design, not a secret; all secrets live in the API project.
 
 ## Scripts
 
