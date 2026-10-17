@@ -1,5 +1,3 @@
-// See https://svelte.dev/docs/kit/types#app.d.ts
-// for information about these interfaces
 declare global {
 	namespace App {
 		interface Platform {
@@ -7,13 +5,6 @@ declare global {
 			ctx: ExecutionContext;
 			caches: CacheStorage;
 			cf?: IncomingRequestCfProperties;
-		}
-
-		interface Platform {
-			env: {
-				lunadb: D1Database;
-				ASSETS: Fetcher;
-			};
 		}
 
 		// interface Error {}
