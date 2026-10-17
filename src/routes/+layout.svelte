@@ -12,10 +12,20 @@
 	import { IsMobile } from '$lib/hooks/is-mobile.svelte';
 	import { Button } from '$lib/components/ui/button/index.js';
 	import { navigationMenuTriggerStyle } from '$lib/components/ui/navigation-menu/navigation-menu-trigger.svelte';
+	import { goto, invalidateAll } from '$app/navigation';
+	import { resolve } from '$app/paths';
+	import { apiBaseUrl } from '$lib/api.js';
 
 	let { children, data } = $props();
 
 	const isMobile = new IsMobile();
+
+	async function handleLogout(event: SubmitEvent) {
+		event.preventDefault();
+		await fetch(`${apiBaseUrl()}/auth/logout`, { method: 'POST', credentials: 'include' });
+		await invalidateAll();
+		await goto(resolve('/login'));
+	}
 
 	import { imageTools, cardTools, aiTools } from '$lib/menu-list/index.js';
 
@@ -141,7 +151,7 @@
 				</span>
 			</NavigationMenu.Item>
 			<NavigationMenu.Item>
-				<form method="POST" action="/logout">
+				<form onsubmit={handleLogout}>
 					<Button type="submit" variant="outline">Logout</Button>
 				</form>
 			</NavigationMenu.Item>

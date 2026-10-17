@@ -4,13 +4,17 @@ Guidance for AI coding agents working in **Luna Stellaria** — a collection of 
 
 You are a lazy senior developer here too: client-first, fewest files, shortest diff. This is a personal tools site, not an enterprise app — no abstraction layers, no premature config.
 
+**This repository is the frontend only.** Accounts, sessions, the D1 database, and the Hugging Face
+endpoint live in the companion API project, [`luna-stellaria-api`](../luna-stellaria-api), served at
+`https://api.luna-stellaria.com`. The browser calls the API directly with credentialed CORS.
+
 ## Stack
 
 - SvelteKit 2 + Svelte 5 (runes mode is **forced** for all project files — see `svelte.config.js`)
 - TypeScript (strict), Vite 8
 - Tailwind CSS 4 via `@tailwindcss/vite` + shadcn-svelte / bits-ui components
-- Cloudflare Workers via `@sveltejs/adapter-cloudflare`, D1 database, Wrangler
-- Auth: `jose` (HS256 JWT in an httpOnly `jwt` cookie) + `bcryptjs`
+- Cloudflare Workers via `@sveltejs/adapter-cloudflare`, Wrangler
+- Auth and AI: delegated to `luna-stellaria-api` (no JWT/bcrypt/D1 code lives here)
 
 ## Commands
 
@@ -38,10 +42,16 @@ You are a lazy senior developer here too: client-first, fewest files, shortest d
   for the house pattern).
 - Prefer the existing `$lib/components/ui/*` shadcn-svelte primitives over new bespoke components.
 - Import aliases: `$lib`, `$app/*`, `$env/*`, `$service-worker`.
+- Programmatic navigation must go through `resolve()` from `$app/paths` (ESLint enforces
+  `svelte/no-navigation-without-resolve`): `goto(resolve('/login'))`.
 
 ## Architecture
 
-- `src/routes/<slug>/+page.svelte` — one route per tool. Tools are client-first; add a `+page.server.ts` only when server secrets or D1 access are needed.
+- `src/routes/<slug>/+page.svelte` — one route per tool. Tools are **client-first**; there are no
+  `+page.server.ts` route files. Anything needing server secrets, the database, or auth calls the API
+  through `apiBaseUrl()` from `src/lib/api.ts`.
+- `src/lib/api.ts` — resolves the API origin: `localhost`/`127.0.0.1` → `http://localhost:8787`,
+  otherwise `https://api.luna-stellaria.com`. Server-side callers pass `url.hostname` explicitly.
 - `src/lib/seo.ts` — `SITE` metadata, `publicTools` list (sitemap/listing), `absoluteUrl()`.
 - `src/lib/components/seo.svelte` — drop-in `<Seo />` component; usual props:
   - `title` (required, appended with ` | Luna Stellaria` unless `suffix={false}`)
@@ -49,49 +59,46 @@ You are a lazy senior developer here too: client-first, fewest files, shortest d
   - `jsonLd?: Record<string, unknown> | Record<string, unknown>[]` — emitted as `application/ld+json`
 - `src/routes/sitemap.xml/+server.ts` — prerendered sitemap built from `publicTools` plus the home page; a tool is included automatically once registered there.
 - `src/lib/menu-list/index.ts` — navigation groups (`imageTools`, `cardTools`, `aiTools`), used by the header/nav in `src/routes/+layout.svelte`.
-- `src/routes/+layout.server.ts` — verifies the `jwt` cookie and exposes `user` to the layout; also enforces
-  the host redirect (canonical `luna-stellaria.com` gets `308` from any other host, preserving path + query;
-  localhost and `*.luna-stellaria.com` are allowed through). Route anything that might run on a non-canonical
-  host through this file — don't bypass it.
+- `src/routes/+layout.server.ts` — enforces the host redirect (canonical `luna-stellaria.com`;
+  `tools.luna-stellaria.com` gets `307`, other unknown hosts get `308`, preserving path + query;
+  localhost and `*.luna-stellaria.com` are allowed through) and forwards the `jwt` cookie to the API's
+  `GET /auth/me` to expose `user` to the layout. Route anything that might run on a non-canonical host
+  through this file — don't bypass it.
 - `src/service-worker/index.ts` — PWA precache service worker.
-- `migrations/*.sql` — D1 migrations, numbered (`0001_...`, `0002_...`). Commands:
-
-  ```bash
-  npx wrangler d1 migrations apply lunadb --local    # local dev
-  npx wrangler d1 migrations apply lunadb --remote   # production
-  ```
-
-  Never edit an applied migration — add a new numbered file instead. To add a table or column: write the migration SQL, apply it, then update any affected TypeScript types in the codebase.
-
-- `wrangler.jsonc` — Worker name, custom domain route, static assets, `lunadb` D1 binding.
+- `wrangler.jsonc` — Worker name, custom domain route, static assets. No D1 binding, no secrets.
 
 ### Auth pattern (reference)
 
-`src/routes/login/+page.server.ts` and `register/+page.server.ts` are the house pattern for server actions with D1:
+There is no server-side auth code here — it all lives in the API. From the frontend:
 
-- `export const actions` takes `{ request, platform, cookies }`; grab the DB via `platform?.env?.lunadb` and hard-fail if missing.
-- Validate input → `return fail(400, { error, ...fields })` (never throw for user error — throw only for real server issues).
-- Parameterized SQL with `.prepare(...).bind(...)`; passwords hashed/compared with `bcryptjs` (cost 12); sessions are a 7-day HS256 JWT (`jose`) written as an httpOnly `jwt` cookie.
-- Read the session in `+layout.server.ts` (`jwtVerify`) and expose `user` to pages via `data.user`.
+- Login/register pages `fetch(`${apiBaseUrl()}/auth/login|register`, { method: 'POST', credentials: 'include', headers: { 'Content-Type': 'application/json' }, body: ... })`.
+- On success, call `invalidateAll()` (to refresh the layout's `data.user`) then `goto(resolve('/'))`.
+- Logout (`src/routes/+layout.svelte`) posts to `/auth/logout` with `credentials: 'include'`, then `invalidateAll()` + `goto(resolve('/login'))`.
+- The session is an httpOnly `jwt` cookie scoped to `.luna-stellaria.com` by the API. The frontend
+  reads auth state only via `data.user`, which comes from the API's `/auth/me` in `+layout.server.ts`.
+- Surface API errors from the JSON envelope (`body.error.message`); the API returns
+  `{ success: false, error: { code, message } }`.
 
 ## Adding a new tool
 
 1. Create `src/routes/<slug>/+page.svelte` with the UI and a `<Seo>` component.
 2. Register it in `src/lib/menu-list/index.ts` (appropriate group).
 3. Add it to `publicTools` in `src/lib/seo.ts` (this feeds the sitemap and public listing).
-4. Only add `+page.server.ts` if the tool needs secrets or D1.
+4. Call the API via `apiBaseUrl()` if the tool needs secrets, the database, or auth.
 
 ## Environment & deployment
 
-- Copy `.env.example` → `.env`; provide `JWT_SECRET`, `hf_endpoints`, `hf_endpoints_key`.
-- Namespace types are declared in `src/app.d.ts`; the Cloudflare env binding is `lunadb` (D1) plus `ASSETS`; server code reads secrets at runtime via `$env/dynamic/private`.
-- Production secrets are set as [Workers secrets](https://developers.cloudflare.com/workers/configuration/secrets/), never committed to the repo.
-- The Worker is bound to `luna-stellaria.com` through the `routes` entry in `wrangler.jsonc` (`custom_domain: true`). The domain's zone must be in the same Cloudflare account or `wrangler deploy` fails.
+- **No environment variables or secrets live in this project** — there is no `.env.example`. All
+  secrets (`JWT_SECRET`, `hf_endpoints`, `hf_endpoints_key`) and the `lunadb` D1 binding belong to
+  `luna-stellaria-api`.
+- Namespace types are declared in `src/app.d.ts`; the generated `Env` exposes only `ASSETS`.
+- The Worker is bound to `luna-stellaria.com` through the `routes` entry in `wrangler.jsonc` (`custom_domain: true`). The domain's zone must be in the same Cloudflare account or `wrangler deploy` fails. The API is deployed separately to `api.luna-stellaria.com`.
 - Keep `README.md` and this file in sync when adding tools, scripts, or changing deployment/domain behavior.
 
 ## Keep in mind
 
-- **Canonical host matters**: every request outside `luna-stellaria.com` gets a `308` redirect. Never hardcode `workers.dev` or preview URLs in shipped code; absolute URLs must go through `absoluteUrl()` / `SITE.url`.
+- **Canonical host matters**: every request outside `luna-stellaria.com` (except allowed dev/api hosts) gets a redirect. Never hardcode `workers.dev` or preview URLs in shipped code; absolute URLs must go through `absoluteUrl()` / `SITE.url`.
 - **SEO parity**: a tool page missing `<Seo>` or `publicTools` registration is invisible to the sitemap and canonical layout.
 - **Generated files**: `worker-configuration.d.ts`, `.svelte-kit/`, and `build/` outputs are disposable — regenerate, don't hand-edit.
-- **temp.sql** at the repo root is scratch SQL — don't include it in migrations or commits.
+- **temp.sql** at the repo root is scratch SQL — don't include it in commits.
+- **Don't move backend logic here**: if a change needs D1, JWT, bcrypt, or the Hugging Face key, it belongs in `luna-stellaria-api`, not in this repo.

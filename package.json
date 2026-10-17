@@ -55,11 +55,13 @@
 	},
 	"dependencies": {
 		"@fontsource-variable/google-sans-code": "^5.3.1",
-		"bcryptjs": "^3.0.3",
 		"compressorjs": "^1.4.0",
-		"jose": "^6.2.12",
 		"lucide-svelte": "^1.0.1",
 		"mode-watcher": "^1.1.0",
 		"qrcode": "^1.5.4"
+	},
+	"allowScripts": {
+		"esbuild@0.28.2": true,
+		"workerd@1.20261006.1": true
 	}
 }

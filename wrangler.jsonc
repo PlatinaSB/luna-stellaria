@@ -15,12 +15,5 @@
 			"pattern": "luna-stellaria.com",
 			"custom_domain": true
 		}
-	],
-	"d1_databases": [
-		{
-			"binding": "lunadb",
-			"database_name": "lunadb",
-			"database_id": "6ab032f8-eb09-4e05-a37b-3d741ec144df"
-		}
 	]
 }
