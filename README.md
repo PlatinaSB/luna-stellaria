@@ -24,12 +24,14 @@ Full public list lives in [`src/lib/seo.ts`](src/lib/seo.ts) (`publicTools`) and
 | `/24cardgame`                      | 24 card game solver                                           |
 | `/indobert-ai-text-classification` | Indonesian AI text detection via the `luna-stellaria-api` API |
 | `/login`, `/register`              | Account auth (forms call the API)                             |
+| `/account`                         | Account settings: name, email, password (call the API)        |
 
 ## Project Structure
 
 ```
 src/routes/<tool>/+page.svelte  One route per tool
 src/routes/login|register/      Auth forms (client-side, call the API)
+src/routes/account/             Account settings (client-side, calls the API)
 src/routes/+layout.server.ts    Auth state from the API + host redirect
 src/lib/api.ts                  API base URL resolution (apiBaseUrl)
 src/lib/seo.ts                  Site metadata, public tool list, canonical URLs

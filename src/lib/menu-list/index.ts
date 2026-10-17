@@ -1,4 +1,8 @@
-export const imageTools: { title: string; href: string; description: string }[] = [
+import type { Pathname } from '$app/types';
+
+type Tool = { title: string; href: Pathname; description: string };
+
+export const imageTools: Tool[] = [
 	{
 		title: 'Convert Image',
 		href: '/convert',
@@ -16,7 +20,7 @@ export const imageTools: { title: string; href: string; description: string }[] 
 	}
 ];
 
-export const cardTools: { title: string; href: string; description: string }[] = [
+export const cardTools: Tool[] = [
 	{
 		title: '24 Card Game',
 		href: '/24cardgame',
@@ -24,7 +28,7 @@ export const cardTools: { title: string; href: string; description: string }[] =
 	}
 ];
 
-export const aiTools: { title: string; href: string; description: string }[] = [
+export const aiTools: Tool[] = [
 	{
 		title: 'IndoBERT AI Text Classification',
 		href: '/indobert-ai-text-classification',

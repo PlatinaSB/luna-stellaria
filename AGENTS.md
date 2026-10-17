@@ -74,6 +74,8 @@ There is no server-side auth code here — it all lives in the API. From the fro
 - Login/register pages `fetch(`${apiBaseUrl()}/auth/login|register`, { method: 'POST', credentials: 'include', headers: { 'Content-Type': 'application/json' }, body: ... })`.
 - On success, call `invalidateAll()` (to refresh the layout's `data.user`) then `goto(resolve('/'))`.
 - Logout (`src/routes/+layout.svelte`) posts to `/auth/logout` with `credentials: 'include'`, then `invalidateAll()` + `goto(resolve('/login'))`.
+- Account settings (`/account`) post to `/auth/account/name|email|password` the same way; email and
+  password changes require `current_password` and an email change reissues the session cookie.
 - The session is an httpOnly `jwt` cookie scoped to `.luna-stellaria.com` by the API. The frontend
   reads auth state only via `data.user`, which comes from the API's `/auth/me` in `+layout.server.ts`.
 - Surface API errors from the JSON envelope (`body.error.message`); the API returns

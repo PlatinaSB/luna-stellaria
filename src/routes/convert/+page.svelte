@@ -325,7 +325,8 @@
 
 								<Card.Footer>
 									{#if img.url}
-										<a href={img.url} rel="" download={img.name} class="w-full">
+										<!-- eslint-disable-next-line svelte/no-navigation-without-resolve -- blob: object URL, not an app route -->
+										<a href={img.url} download={img.name} class="w-full">
 											<Button class="w-full">Download</Button>
 										</a>
 									{/if}

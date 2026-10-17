@@ -3,6 +3,7 @@
 	import Seo from '$lib/components/seo.svelte';
 	import { SITE, absoluteUrl, publicTools } from '$lib/seo.js';
 
+	import { resolve } from '$app/paths';
 	import { imageTools, cardTools, aiTools } from '$lib/menu-list/index.js';
 
 	const jsonLd = {
@@ -61,7 +62,7 @@
 					<div class="grid gap-2">
 						{#each aiTools as tool (tool.title)}
 							<a
-								href={tool.href}
+								href={resolve(tool.href)}
 								class="block rounded-md border p-3 text-left transition hover:bg-muted"
 							>
 								<div class="font-medium">{tool.title}</div>
@@ -75,8 +76,7 @@
 						<div class="grid gap-2">
 							{#each imageTools as tool (tool.title)}
 								<a
-									href={tool.href}
-									rel=""
+									href={resolve(tool.href)}
 									class="block rounded-md border p-3 text-left transition hover:bg-muted"
 								>
 									<div class="font-medium">{tool.title}</div>
@@ -91,7 +91,7 @@
 						<div class="grid gap-2">
 							{#each cardTools as tool (tool.title)}
 								<a
-									href={tool.href}
+									href={resolve(tool.href)}
 									class="block rounded-md border p-3 text-left transition hover:bg-muted"
 								>
 									<div class="font-medium">{tool.title}</div>

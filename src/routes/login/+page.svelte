@@ -54,7 +54,7 @@
 			<Card.Description>Enter your email below to login to your account</Card.Description>
 
 			<Card.Action>
-				<Button variant="link" href="/register">Register</Button>
+				<Button variant="link" href={resolve('/register')}>Register</Button>
 			</Card.Action>
 		</Card.Header>
 

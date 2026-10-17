@@ -15,5 +15,15 @@
 			"pattern": "luna-stellaria.com",
 			"custom_domain": true
 		}
-	]
+	],
+
+	"vars": {
+		"ENVIRONMENT": "production"
+	},
+
+	"previews": {
+		"vars": {
+			"ENVIRONMENT": "preview"
+		}
+	}
 }
