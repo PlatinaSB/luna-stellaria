@@ -51,7 +51,9 @@ endpoint live in the companion API project, [`luna-stellaria-api`](../luna-stell
   `+page.server.ts` route files. Anything needing server secrets, the database, or auth calls the API
   through `apiBaseUrl()` from `src/lib/api.ts`.
 - `src/lib/api.ts` — resolves the API origin: `localhost`/`127.0.0.1` → `http://localhost:8787`,
-  otherwise `https://api.luna-stellaria.com`. Server-side callers pass `url.hostname` explicitly.
+  `<branch>.preview.luna-stellaria.com` → the parallel API preview `https://<branch>.preview-api.luna-stellaria.com`,
+  otherwise `https://api.luna-stellaria.com`; an explicit `PUBLIC_API_URL` var overrides all of it.
+  Server-side callers pass `url.hostname` explicitly.
 - `src/lib/seo.ts` — `SITE` metadata, `publicTools` list (sitemap/listing), `absoluteUrl()`.
 - `src/lib/components/seo.svelte` — drop-in `<Seo />` component; usual props:
   - `title` (required, appended with ` | Luna Stellaria` unless `suffix={false}`)
@@ -95,15 +97,26 @@ There is no server-side auth code here — it all lives in the API. From the fro
 
 ## Environment & deployment
 
-- **Only public env config lives in this project** — `PUBLIC_Turnstile_site_key` (the Turnstile site
-  key, public by design) is read via `$env/dynamic/public` (`src/lib/components/turnstile.svelte`).
-  Locally it comes from `.env` (template in `.env.example`); in production/preview it comes from the
-  `vars` entry in `wrangler.jsonc` (change it in both places). Never put secrets here: all secrets
-  (`JWT_SECRET`, `Turnstile_secret_key`, `hf_endpoints`, `hf_endpoints_key`) and the `lunadb` D1
+- Three environments, all under `luna-stellaria.com`:
+  - **development** — `npm run dev` (vite) / `npm run preview` (local built worker). Config comes from `.env` (template in `.env.example`).
+  - **preview** — `npx wrangler preview` deploys an isolated copy per branch, served on the preview-only
+    wildcard `*.preview.luna-stellaria.com` (route with `previews_enabled: true, enabled: false`). Preview
+    vars/secrets/bindings live in the `previews` block of `wrangler.jsonc` (Cloudflare Worker Previews,
+    Wrangler 4.135+). Requires Wrangler to have deployed top-level config at least once.
+  - **production** — `npm run deploy` to `luna-stellaria.com`; vars at the top level of `wrangler.jsonc`.
+- **Only public env config lives in this project** (`ENVIRONMENT`, `PUBLIC_Turnstile_site_key`,
+  `PUBLIC_API_URL`) read via `$env/dynamic/public` or platform bindings. Never put secrets here: all
+  secrets (`JWT_SECRET`, `Turnstile_secret_key`, `hf_endpoints`, `hf_endpoints_key`) and the `lunadb` D1
   binding belong to `luna-stellaria-api`.
-- Namespace types are declared in `src/app.d.ts`; the generated `Env` exposes only `ASSETS`.
-- The Worker is bound to `luna-stellaria.com` through the `routes` entry in `wrangler.jsonc` (`custom_domain: true`). The domain's zone must be in the same Cloudflare account or `wrangler deploy` fails. The API is deployed separately to `api.luna-stellaria.com`.
-- Keep `README.md` and this file in sync when adding tools, scripts, or changing deployment/domain behavior.
+- `apiBaseUrl()` maps each frontend host to its API: localhost → local API, `*.preview.luna-stellaria.com`
+  → parallel `*.preview-api.luna-stellaria.com`, anything else → `https://api.luna-stellaria.com`;
+  `PUBLIC_API_URL` overrides.
+- Namespace types are declared in `src/app.d.ts`; the generated `Env` mirrors `wrangler.jsonc` `vars` —
+  run `npm run gen` after changing it.
+- The Worker is bound to `luna-stellaria.com` via `routes` (`custom_domain: true`); the zone must be in
+  the same Cloudflare account or `wrangler deploy` fails. Protect `*.preview.luna-stellaria.com` with
+  Cloudflare Access (no automatic `noindex` there). Keep `README.md` and this file in sync when adding
+  tools, scripts, or changing deployment/domain behavior.
 
 ## Keep in mind
 

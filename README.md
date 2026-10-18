@@ -48,7 +48,7 @@ wrangler.jsonc                  Worker config (domain route, static assets)
 - **Client-only tools** — convert/compress/QR/24-card game run entirely in the browser; no uploads.
 - **AI text classification** — the page calls `POST /ai/indobert/classify` on the API, which proxies the hosted Hugging Face endpoint. The API holds the endpoint URL and key.
 - **Auth** — the login/register form pages `fetch` the API directly with `credentials: 'include'`. The API issues the session as an httpOnly `jwt` cookie scoped to `.luna-stellaria.com`, so it is sent on both frontend and API requests. `+layout.server.ts` forwards the cookie to the API's `GET /auth/me` to render auth state; the frontend never verifies the JWT itself.
-- **API base URL** — [`src/lib/api.ts`](src/lib/api.ts) resolves the API origin: `localhost`/`127.0.0.1` → `http://localhost:8787`, everything else → `https://api.luna-stellaria.com`. Server-side callers pass the request hostname explicitly.
+- **API base URL** — [`src/lib/api.ts`](src/lib/api.ts) resolves the API origin: `localhost`/`127.0.0.1` → `http://localhost:8787`, version previews (`<branch>.preview.luna-stellaria.com`) → the parallel API preview `https://<branch>.preview-api.luna-stellaria.com`, everything else → `https://api.luna-stellaria.com`. An explicit `PUBLIC_API_URL` var overrides all of this. Server-side callers pass the request hostname explicitly.
 - **Host redirect** — `+layout.server.ts` serves the canonical domain. `tools.luna-stellaria.com` redirects to `luna-stellaria.com` with `307`, and other unknown hostnames (e.g. `*.workers.dev`) with `308`, preserving path + query. Localhost and `*.luna-stellaria.com` are allowed through.
 - **SEO** — each page renders `<Seo title=... description=... path=... jsonLd=... />`; canonical/OG/Twitter tags generated from `SITE` in `src/lib/seo.ts`.
 
@@ -105,6 +105,20 @@ production — it is public by design, not a secret; all secrets live in the API
 | `npm run gen`     | Regenerate Cloudflare bindings types                            |
 | `npm run deploy`  | Generate types, format, build, and deploy to Cloudflare Workers |
 
+## Environments
+
+| Environment | How it runs                                                                                | Config                                                             |
+| ----------- | ------------------------------------------------------------------------------------------ | ------------------------------------------------------------------ |
+| Development | `npm run dev` (vite) or `npm run preview` (built worker via `wrangler dev`)                | `.env` (template in `.env.example`), local API on `localhost:8787` |
+| Preview     | `npx wrangler preview` — isolated copy per branch at `<branch>.preview.luna-stellaria.com` | `previews` block in `wrangler.jsonc`                               |
+| Production  | `npm run deploy` → `https://luna-stellaria.com`                                            | top-level `vars` in `wrangler.jsonc`                               |
+
+Only public vars live here (`ENVIRONMENT`, `PUBLIC_Turnstile_site_key`, `PUBLIC_API_URL`). The preview
+frontend automatically targets the API preview of the same preview name (`apiBaseUrl()` in
+[`src/lib/api.ts`](src/lib/api.ts)); set `PUBLIC_API_URL` in the `previews` block to target a
+different API. Protect `*.preview.luna-stellaria.com` with Cloudflare Access — custom-domain preview
+URLs are public and get no `noindex` header.
+
 ## Deployment
 
 This project uses the [Cloudflare adapter](https://kit.svelte.dev/docs/adapter-cloudflare) and deploys to Workers with [Wrangler](https://developers.cloudflare.com/workers/wrangler/):
@@ -129,4 +143,4 @@ The Worker is bound to the apex domain via the `routes` entry in [`wrangler.json
 ]
 ```
 
-With `custom_domain: true`, Wrangler creates the DNS record and certificate for the domain on deploy, so `https://luna-stellaria.com` is served directly by the Worker. The domain's zone must live in the same Cloudflare account as the Worker; otherwise `wrangler deploy` fails. `workers_dev` and `preview_urls` remain enabled, and requests on those hostnames are redirected to the canonical domain by `src/routes/+layout.server.ts`.
+With `custom_domain: true`, Wrangler creates the DNS record and certificate for the domain on deploy, so `https://luna-stellaria.com` is served directly by the Worker. The domain's zone must live in the same Cloudflare account as the Worker; otherwise `wrangler deploy` fails. A second, preview-only route (`preview.luna-stellaria.com`, `previews_enabled: true`, `enabled: false`) turns on version previews on `<preview-name>.preview.luna-stellaria.com`, while `preview_urls: false` keeps previews off `workers.dev`. Anything on a `workers.dev` / non-canonical host is redirected to the canonical domain by `src/routes/+layout.server.ts`.
