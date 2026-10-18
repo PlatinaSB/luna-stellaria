@@ -9,19 +9,35 @@
 		"directory": ".svelte-kit/cloudflare"
 	},
 	"workers_dev": true,
-	"preview_urls": true,
+	"preview_urls": false,
 	"routes": [
 		{
 			"pattern": "luna-stellaria.com",
 			"custom_domain": true
+		},
+		// Preview-only wildcard for versions previews: each `npx wrangler preview`
+		// deploys to `<preview-name>.preview.luna-stellaria.com`. Cloudflare
+		// provisions the wildcard DNS record + certificate from this entry.
+		{
+			"pattern": "preview.luna-stellaria.com",
+			"custom_domain": true,
+			"previews_enabled": true,
+			"enabled": false
 		}
 	],
 
 	"vars": {
 		"ENVIRONMENT": "production",
-		"PUBLIC_Turnstile_site_key": "0x4AAAAAAFZK5ULvx-AEBf7T"
+		"PUBLIC_Turnstile_site_key": "0x4AAAAAAFZK5ULvx-AEBf7T",
+		"PUBLIC_API_URL": "https://api.luna-stellaria.com"
 	},
 
+	// Cloudflare Worker Previews (Wrangler 4.135+). `npx wrangler preview` creates
+	// an isolated preview per branch, served at
+	// `<preview-name>.preview.luna-stellaria.com`. The frontend automatically
+	// calls the API preview of the same preview name (see `src/lib/api.ts`);
+	// set `PUBLIC_API_URL` here only to target a different API. Protect these
+	// hosts with Cloudflare Access — custom-domain preview URLs are public.
 	"previews": {
 		"vars": {
 			"ENVIRONMENT": "preview",

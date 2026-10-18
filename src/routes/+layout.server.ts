@@ -7,16 +7,14 @@ const ALLOWED_HOSTNAMES = new Set(['localhost', '127.0.0.1', '::1']);
 export const load = (async ({ cookies, url, fetch }) => {
 	const hostname = url.hostname.toLowerCase();
 
-	if (hostname === 'tools.luna-stellaria.com') {
-		throw redirect(307, `https://luna-stellaria.com${url.pathname}${url.search}`);
-	}
-
+	// Canonical site and every subdomain (www, version previews…). The exact
+	// match covers the bare apex without also letting lookalike hosts like
+	// `something-luna-stellaria.com` through.
 	const isAllowed =
 		ALLOWED_HOSTNAMES.has(hostname) ||
 		hostname.endsWith('.localhost') ||
-		hostname.endsWith('.luna-stellaria.com') ||
-		hostname.endsWith('luna-stellaria.com') ||
-		hostname.endsWith('-lunatools.platinasb.workers.dev');
+		hostname === 'luna-stellaria.com' ||
+		hostname.endsWith('.luna-stellaria.com');
 
 	if (!isAllowed) {
 		throw redirect(308, `https://luna-stellaria.com${url.pathname}${url.search}`);
